@@ -56,3 +56,8 @@ class LinearRegressor:
 
     def predict(self, X):
         return X.dot(self.W)+self.bias
+
+
+    def mse(self):
+        return np.square(self.Y - self.predict(self.X)).mean()
+
