@@ -1,9 +1,9 @@
 from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.dummy import DummyRegressor
-from src.regression.regressors import LinearRegressor
+from src.regression.linear_regressors import LinearRegressor
 from sklearn.linear_model import LinearRegression
-from src.utlity.util import plot_loss
+from src.utility.util import plot_loss
 from sklearn.metrics  import mean_squared_error
 
 
