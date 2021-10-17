@@ -1,7 +1,7 @@
 import numpy as np
 from abc import ABC,abstractmethod
 from src.utility.metrics import mse, rmse, cross_entropy
-
+import logging
 
 
 
@@ -161,6 +161,7 @@ class LogisticRegression(regressor):
                 loss = self.loss(y_hat, self.Y)
                 if self.vebose:
                     print(f'Current loss is {loss} @ {_}')
+                    logging.debug(f'Current loss is {loss} @ {_}')
                 self.loss_tracker.append((loss, _))
         except Exception as e:
             print(e)

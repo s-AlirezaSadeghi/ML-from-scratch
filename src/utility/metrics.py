@@ -67,3 +67,9 @@ def entropy(data: list):
     assert isinstance(data, list), "Data should be a List type"
     value, counts = np.unique(data, return_counts=True)  # counts occurrence of each value
     return stats.entropy(counts, base=2)  # get entropy from counts
+
+
+#todo: finish confusion confusion_matrix
+def confusion_matrixx():
+    ...
+

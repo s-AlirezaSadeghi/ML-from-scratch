@@ -15,3 +15,5 @@ To install the environment for this project follow instructions below.</br>
 To run tests execute " python -m pytest tests -v"
 
 
+## Todo
+setup pre-commit for project
