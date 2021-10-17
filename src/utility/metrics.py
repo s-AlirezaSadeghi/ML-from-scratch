@@ -1,4 +1,6 @@
 import numpy as np
+from scipy import stats
+from collections import Counter
 
 
 
@@ -26,3 +28,35 @@ def cross_entropy(y_hat,y_true,epsilon=1e-12):
 def accuracy(y_hat,y_true):
     assert len(y_true) ==len(y_hat), "Lenght of Y pred and Y True don't match!"
     return np.sum(y_true==y_hat)/len(y_true)
+
+#Todo : finish this
+def logloss():
+    """
+    Log loss, aka logistic loss or cross-entropy loss.
+
+
+    :return:
+    """
+    ...
+
+#Todo : finish this
+def gini():
+    ...
+
+#Todo : finish this
+def partial_derivative():
+    ...
+
+def entropy(data: list):
+    """Calculates entropy of the passed `List`
+    """
+    value, counts = np.unique(label_list, return_counts=True)  # counts occurrence of each value
+    return stats.entropy(counts, base=2)  # get entropy from counts
+
+
+label_list = ["a","a","b","b","b","b"]
+value, counts = np.unique(label_list, return_counts=True)
+
+entropy(label_list)
+
+stats.entropy(counts, base=2)
