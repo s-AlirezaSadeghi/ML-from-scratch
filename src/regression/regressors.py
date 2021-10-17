@@ -17,10 +17,11 @@ class LinearRegressor:
         '''
 
         self.m , self.n = X.shape
-        self.bias = 0
-        self.W = np.zeros(self.n)
+        self.bias = 1
+        self.W = np.ones(self.n)
         self.X = X
         self.Y = Y
+        self.error=[]
 
 
         #todo: assert x and y
@@ -36,6 +37,7 @@ class LinearRegressor:
         :rtype: LinearRegressor object
         '''
         Y_hat = self.predict(self.X)
+        self.error.append(self.mse())
         self.dW , self.dbias = self.calculate_gradient(Y_hat)
 
         self.W = self.W - self.learning_rate * self.dW
