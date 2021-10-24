@@ -198,7 +198,10 @@ class Leaf:
     """
 
     def __init__(self, data):
-        self.predictions = Counter(data[1])
+        if data[1].ndim == 1:
+            self.predictions = Counter(data[1])
+        else:
+            self.predictions = Counter(data[1].reshape(-1).tolist())
 
 
 class Decision_Node:
