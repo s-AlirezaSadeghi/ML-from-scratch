@@ -3,6 +3,7 @@ from collections import Counter
 from scipy.stats import entropy
 from typing import List
 from math import e
+from src.utility.metrics import gini
 
 
 class SplitCondition:
@@ -56,19 +57,18 @@ class ClassificationTree:
     # https: // machinelearningmastery.com / implement - decision - tree - algorithm - scratch - python /
 
     def gini(self, data):
-        '''
+        """
         Calculate gini index for the given array
         :param data: an array of values
         :type data: np.array
         :return: gini index of input array
         :rtype: float
-        '''
-        labels, label_freqs = np.unique(data, return_counts=True)
-        return 1 - (np.power(label_freqs / label_freqs.sum(), 2)).sum()
+        """
+        return gini(data)
 
     #   information gain
     def information_gain(self, left, right, current_uncertainty):
-        '''
+        """
         Calculates the information gain (weighted gini ) based on the splits ( right and left ) compared to the existing uncertainity
         :param left: left split of tree node
         :type left: np.array
@@ -78,20 +78,20 @@ class ClassificationTree:
         :type current_uncertainty: float
         :return: quantity of infortmation gain by making splits rightr and left based on the condition
         :rtype: float
-        '''
+        """
         # calculate left split  weight - right split weight is 1- left split
         p = float(len(left)) / (len(left) + len(right))
         return current_uncertainty - p * self.gini(left[1]) - (1 - p) * self.gini(right[1])
 
     def best_split(self, x: np.array, y: np.array):
-        '''
+        """
         determines the best condition to split a node into two paritions using gini and information gain iteratively
         :param data: node data (whether root or sub-root )
         :type data: np.ndarray
         :return: a condition/question  based on features and their distinct values which leads to highest information gain after split to
         left and right split
         :rtype: (float,SplitCondition)
-        '''
+        """
         best_gain = 0
         best_cond = None
         # Calculate gini score before split
@@ -126,7 +126,7 @@ class ClassificationTree:
         if gain == 0:
             return Leaf(x, y)
 
-        true_data, false_data = ct.parition(x, y, condition)
+        true_data, false_data = self.parition((x, y), condition)
 
         # Recursively build the true branch.
         left_branch = self.tree_builder(true_data)
@@ -203,15 +203,6 @@ def print_tree(node, spacing=""):
     print_tree(node.false_branch, spacing + "  ")
 
 
-def gini2(data):
-    labels, label_freqs = np.unique(data, return_counts=True)
-    return 1 - (np.power(label_freqs / label_freqs.sum(), 2)).sum()
-
-
-def gini3(data):
-    labels, label_freqs = np.unique(data, return_counts=True)
-    prob_impurity = label_freqs / label_freqs.sum()
-    return 2 * np.prod(prob_impurity)
 
 
 def entropy_scipy(data):
@@ -226,39 +217,6 @@ def entropy_numpy(data):
     return -(probabilities * np.log(probabilities) / np.log(e)).sum()
 
 
-# sample data creation
-num_rows = 50
-cardiac_data = np.random.randint(50, 112, size=(num_rows, 1), dtype=int)
-age_data = np.random.randint(19, 85, size=(num_rows, 1), dtype=int)
-heart_attack = np.random.choice([0, 1], size=(num_rows, 1), p=[0.75, 0.25])
-training_data = np.column_stack((cardiac_data, age_data, heart_attack))
-
-
-x = np.column_stack((cardiac_data, age_data))
-y=  heart_attack
-
-# calculate starting current_uncertainty
-current_uncertainty = gini2(training_data[:, -1])
-# print(f'initial information gain  is : {current_uncertainty}')
-print(Counter(training_data[:, -1]))
-
-# gini(training_data[:,-1])
-gini2(training_data[:, -1])
-gini3(training_data[:, -1])
-entropy_scipy(training_data[:, -1])
-entropy_numpy(training_data[:, -1])
-
-# ct = ClassificationTree(headers=['heart_rate','age','heart_attack'])
-# ct.best_split(training_data)
-
-ct = ClassificationTree(['heart_rate','age','heart_attack'])
-ct.fit(x,y)
-print('x')
-# my_tree = tree_builder(data=training_data, labels=['heart_rate', 'age', 'heart_attack'])
-print_tree(my_tree)
-print(f'initial information gain  is : {current_uncertainty}')
-
-print('Job done!')
 
 
 def classify(row, node):
@@ -275,7 +233,3 @@ def classify(row, node):
         return classify(row, node.true_branch)
     else:
         return classify(row, node.false_branch)
-
-
-print(training_data[0, :-1])
-classify(training_data[0], my_tree)

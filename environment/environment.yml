@@ -4,4 +4,7 @@ dependencies:
   - python=3.6
   - pip
   - pip:
-    - -r requirements.txt
+      - --trusted-host=pypi.python.org
+      - --trusted-host=pypi.org
+      - --trusted-host=files.pythonhosted.org
+      - -r requirements.txt
