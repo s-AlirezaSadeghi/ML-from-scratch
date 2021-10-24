@@ -32,6 +32,7 @@ class ClassificationTree:
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
         self.headers = headers
+        self.tree = None
 
     # return distinct values of an array
     def unique_vals(self, rows, col):
@@ -129,12 +130,65 @@ class ClassificationTree:
         true_data, false_data = self.parition((x, y), condition)
 
         # Recursively build the true branch.
-        left_branch = self.tree_builder(true_data)
+        left_branch = self.tree_builder(true_data, labels=self.headers)
 
         # Recursively build the false branch.
-        right_branch = self.tree_builder(false_data)
+        right_branch = self.tree_builder(false_data, labels=self.headers)
+
+        self.tree = Decision_Node(condition, left_branch, right_branch)
+        return Decision_Node(condition, left_branch, right_branch)
+
+    def tree_builder(self, data: np.array, labels: List):
+        ct = ClassificationTree(headers=labels)
+        # get best split with most gain
+        gain, condition = ct.best_split(data[0],data[1])
+
+        if gain == 0:
+            return Leaf(data)
+
+        true_data, false_data = ct.parition(data, condition)
+
+        # Recursively build the true branch.
+        left_branch = self.tree_builder(true_data, labels=self.headers)
+
+        # Recursively build the false branch.
+        right_branch = self.tree_builder(false_data, labels=self.headers)
 
         return Decision_Node(condition, left_branch, right_branch)
+
+    def print_tree(self, node, spacing=""):
+        """World's most elegant tree printing function."""
+
+        # Base case: we've reached a leaf
+        if isinstance(node, Leaf):
+            print(spacing + "Predict", node.predictions)
+            return
+
+        # Print the question at this node
+        print(spacing + str(node.question))
+
+        # Call this function recursively on the true branch
+        print(spacing + '--> True:')
+        self.print_tree(node.true_branch, spacing + "  ")
+
+        # Call this function recursively on the false branch
+        print(spacing + '--> False:')
+        self.print_tree(node.false_branch, spacing + "  ")
+
+    def predict(self, row, node):
+        """See the 'rules of recursion' above."""
+
+        # Base case: we've reached a leaf
+        if isinstance(node, Leaf):
+            return node.predictions
+
+        # Decide whether to follow the true-branch or the false-branch.
+        # Compare the feature / value stored in the node,
+        # to the example we're considering.
+        if node.question.match(row):
+            return self.predict(row, node.true_branch)
+        else:
+            return self.predict(row, node.false_branch)
 
 
 class Leaf:
@@ -144,7 +198,7 @@ class Leaf:
     """
 
     def __init__(self, data):
-        self.predictions = Counter(data[:, -1])
+        self.predictions = Counter(data[1])
 
 
 class Decision_Node:
@@ -164,43 +218,8 @@ class Decision_Node:
     # def predict(self,data)
 
 
-# def tree_builder(data: np.array, labels: List):
-#     ct = ClassificationTree(headers=labels)
-#     # get best split with most gain
-#     gain, condition = ct.best_split(data)
-#
-#     if gain == 0:
-#         return Leaf(data)
-#
-#     true_data, false_data = ct.parition(data, condition)
-#
-#     # Recursively build the true branch.
-#     left_branch = tree_builder(true_data)
-#
-#     # Recursively build the false branch.
-#     right_branch = tree_builder(false_data)
-#
-#     return Decision_Node(condition, left_branch, right_branch)
 
 
-def print_tree(node, spacing=""):
-    """World's most elegant tree printing function."""
-
-    # Base case: we've reached a leaf
-    if isinstance(node, Leaf):
-        print(spacing + "Predict", node.predictions)
-        return
-
-    # Print the question at this node
-    print(spacing + str(node.question))
-
-    # Call this function recursively on the true branch
-    print(spacing + '--> True:')
-    print_tree(node.true_branch, spacing + "  ")
-
-    # Call this function recursively on the false branch
-    print(spacing + '--> False:')
-    print_tree(node.false_branch, spacing + "  ")
 
 
 
@@ -219,17 +238,17 @@ def entropy_numpy(data):
 
 
 
-def classify(row, node):
-    """See the 'rules of recursion' above."""
-
-    # Base case: we've reached a leaf
-    if isinstance(node, Leaf):
-        return node.predictions
-
-    # Decide whether to follow the true-branch or the false-branch.
-    # Compare the feature / value stored in the node,
-    # to the example we're considering.
-    if node.question.match(row):
-        return classify(row, node.true_branch)
-    else:
-        return classify(row, node.false_branch)
+# def classify(row, node):
+#     """See the 'rules of recursion' above."""
+#
+#     # Base case: we've reached a leaf
+#     if isinstance(node, Leaf):
+#         return node.predictions
+#
+#     # Decide whether to follow the true-branch or the false-branch.
+#     # Compare the feature / value stored in the node,
+#     # to the example we're considering.
+#     if node.question.match(row):
+#         return classify(row, node.true_branch)
+#     else:
+#         return classify(row, node.false_branch)
