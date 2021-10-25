@@ -13,7 +13,10 @@ class SplitCondition:
         self.col_names = col_names
 
     def match(self, data):
-        subspace = data[:, self.col]
+        if data.ndim != 1:
+            subspace = data[:, self.col]
+        else:
+            subspace = data[self.col]
         if np.issubdtype(type(self.value), np.signedinteger) or isinstance(self.value, float):
             return subspace >= self.value
         elif isinstance(self.value, str):
@@ -175,9 +178,8 @@ class ClassificationTree:
         print(spacing + '--> False:')
         self.print_tree(node.false_branch, spacing + "  ")
 
-    def predict(self, row, node):
+    def predict_row(self, row, node):
         """See the 'rules of recursion' above."""
-
         # Base case: we've reached a leaf
         if isinstance(node, Leaf):
             return node.predictions
@@ -186,9 +188,17 @@ class ClassificationTree:
         # Compare the feature / value stored in the node,
         # to the example we're considering.
         if node.question.match(row):
-            return self.predict(row, node.true_branch)
+            return self.predict_row(row, node.true_branch)
         else:
-            return self.predict(row, node.false_branch)
+            return self.predict_row(row, node.false_branch)
+
+    def predict(self, data):
+        if data.ndim == 1:
+            return ((self.predict_row(data, self.tree))).most_common(1)[0][0]
+        predictions = []
+        for i in data:
+            predictions.append((self.predict_row(i, self.tree)).most_common(1)[0][0])
+        return np.array(predictions)
 
 
 class Leaf:
