@@ -5,6 +5,12 @@ from src.regression.linear_regressors import LinearRegressor
 from sklearn.linear_model import LinearRegression
 from src.utility.util import plot_loss
 from sklearn.metrics import mean_squared_error
+import logging
+
+# plot loss graph
+GRAPH = False
+
+logging.basicConfig(level=logging.INFO)
 
 # load diabetes data
 X, Y = load_diabetes(return_X_y=True)
@@ -25,16 +31,21 @@ model_sklearn = LinearRegression()
 model_sklearn.fit(X_train, Y_train)
 
 # plot loss over time for ml-from-scratch model
-plot_loss(model)
+if GRAPH:
+    plot_loss(model)
 
 # comparing Coefficients
-print(f"Coefficients using ml-from-scratch model {model.weights}")
-print(f"Coefficients using Sklearn model {model_sklearn.coef_}")
+logging.info(f"Coefficients using ml-from-scratch model {model.weights}")
+logging.info(f"Coefficients using Sklearn model {model_sklearn.coef_}")
 
-print(f"Biases using ml-from-scratch model {model.bias}")
-print(f"Biases using Sklearn model {model_sklearn.intercept_}")
+logging.info(f"Biases using ml-from-scratch model {model.bias}")
+logging.info(f"Biases using Sklearn model {model_sklearn.intercept_}")
 
 # Compare the MSE of models
-print("Dummy model test data RMSE : ", mean_squared_error(Y_test, dummy_model.predict(X_test), squared=False))
-print("Sklearn model test data RMSE : ", mean_squared_error(Y_test, model_sklearn.predict(X_test), squared=False))
-print("ml-from-scratch model test data RMSE : ", mean_squared_error(Y_test, model.predict(X_test), squared=False))
+logging.info(f"ml-from-scratch model test data RMSE : {mean_squared_error(Y_test, model.predict(X_test), squared=False)}")
+logging.info(f"Dummy model test data RMSE : {mean_squared_error(Y_test, dummy_model.predict(X_test), squared=False)}")
+logging.info(f"Sklearn model test data RMSE : {mean_squared_error(Y_test, model_sklearn.predict(X_test), squared=False)}")
+
+
+
+

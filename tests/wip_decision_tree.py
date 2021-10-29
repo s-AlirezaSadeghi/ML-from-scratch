@@ -1,9 +1,8 @@
 import numpy as np
-from src.cart.decision_tree import ClassificationTree
-from src.cart.decision_tree import gini2
-from src.cart.decision_tree import gini3
-from src.cart.decision_tree import entropy_numpy
-from src.cart.decision_tree import entropy_scipy
+from src.classification.decision_tree_classifier import ClassificationTree
+from src.classification.decision_tree_classifier import gini2
+from src.classification.decision_tree_classifier import entropy_numpy
+from src.classification.decision_tree_classifier import entropy_scipy
 from collections import Counter
 
 from src.utility import metrics as mt

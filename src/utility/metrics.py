@@ -87,9 +87,9 @@ def confusion_matrixx():
     ...
 
 
-def euclidean_distance(a: np.ndarray, b: np.ndarray) -> List:
+def euclidean_distance(a: np.ndarray, b: np.ndarray) -> float:
     """
-    manhatan distance : Square root of sum of squares differences between points
+    Euclidean distance : Square root of sum of squares differences between points
     :param a:
     :type a:
     :param b:
@@ -97,10 +97,19 @@ def euclidean_distance(a: np.ndarray, b: np.ndarray) -> List:
     :return:
     :rtype:
     """
-    return list(map(distance.euclidean, a, b))
+    return distance.euclidean(a, b)
+
+
+def manhattan_distance(a: np.ndarray, b: np.ndarray) -> float:
+    """
+    Manhattan distance : absolute difference between point a and point b , in vector space
+    :param a: point a
+    :param b: point b
+    :return: Manhatan distance from point a to b
+    """
+    return distance.cdist(a, b, metric='cityblock')
 
 
 # todo: write manhatan distance function
 def manhatan_distance(a: np.ndarray, b: np.ndarray) -> List:
     ...
-

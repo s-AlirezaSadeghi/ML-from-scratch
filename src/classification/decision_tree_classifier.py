@@ -53,8 +53,8 @@ class ClassificationTree:
         :rtype: (np.array,np.array)
         '''
         x, y = data
-        true_case = (x[condition.match(x)],y[condition.match(x)])
-        false_case = (x[~(condition.match(x))],y[~(condition.match(x))])
+        true_case = (x[condition.match(x)], y[condition.match(x)])
+        false_case = (x[~(condition.match(x))], y[~(condition.match(x))])
         return true_case, false_case
 
     # https: // www.youtube.com / watch?v = LDRbO9a6XPU
