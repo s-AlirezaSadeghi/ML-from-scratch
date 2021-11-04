@@ -1,7 +1,8 @@
 # Machine learning from scratch
 
 In this repository I implement a number of Machine Learning algorithms from scratch. 
-In addition, I script a performance comparison against  scikit learn implementations.
+In addition, I script a performance comparison against scikit learn
+implementations. Be aware that this is a work in progress project.
 
 
 ### Environment setup
@@ -16,4 +17,4 @@ To run tests execute " python -m pytest tests -v"
 
 
 ## Todo
-setup pre-commit for project
+setup pre-commit 
